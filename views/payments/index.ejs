@@ -1,0 +1,29 @@
+<%- include('../partials/head') %>
+<%- include('../partials/nav') %>
+<main class="main">
+  <header class="page-header">
+    <h1>Payments</h1>
+    <a href="/payments/new" class="btn btn-primary">Add Payment</a>
+  </header>
+
+  <% if (payments.length) { %>
+  <table class="table">
+    <thead>
+      <tr><th>Amount</th><th>Source</th><th>Note</th><th>Date</th></tr>
+    </thead>
+    <tbody>
+      <% payments.forEach(p => { %>
+      <tr>
+        <td><%= (Number(p && p.amount) || 0).toLocaleString('en-IN', { style: 'currency', currency: 'INR' }) %></td>
+        <td><%= (p && p.source) || '—' %></td>
+        <td><%= (p && p.note) || '—' %></td>
+        <td><%= (p && p.date) ? new Date(p.date).toLocaleString() : '—' %></td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+  <% } else { %>
+  <p class="muted">No payments yet. <a href="/payments/new">Add payment from ecommerce</a></p>
+  <% } %>
+</main>
+<%- include('../partials/footer') %>

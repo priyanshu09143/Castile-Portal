@@ -1,0 +1,72 @@
+<%- include('../partials/head') %>
+<%- include('../partials/nav') %>
+<main class="main">
+  <header class="page-header">
+    <h1><%= vendor.name %></h1>
+    <a href="/vendors" class="btn">Back to Vendors</a>
+  </header>
+
+  <div class="vendor-actions">
+    <a href="/vendors/<%= vendor._id %>/purchase-bills/new" class="btn btn-primary">Add purchase bill</a>
+    <a href="/vendors/<%= vendor._id %>/payments/new" class="btn btn-primary">Add payment bill</a>
+  </div>
+
+  <div class="grid-2">
+    <section class="panel">
+      <h2>Purchase bills</h2>
+      <% if (purchaseBills.length) { %>
+      <table class="table">
+        <thead>
+          <tr><th>Amount</th><th>Note</th><th>Bill image</th><th>Date</th><th></th></tr>
+        </thead>
+        <tbody>
+          <% purchaseBills.forEach(b => { %>
+          <tr>
+            <td><%= (Number(b.amount) || 0).toLocaleString('en-IN', { style: 'currency', currency: 'INR' }) %></td>
+            <td><%= b.note || '—' %></td>
+            <td><% if (b.image) { %><a href="<%= b.image %>" target="_blank" rel="noopener"><img src="<%= b.image %>" alt="Bill" class="thumb"></a><% } else { %>—<% } %></td>
+            <td><%= b.date ? new Date(b.date).toLocaleDateString() : '—' %></td>
+            <td>
+              <form action="/vendors/<%= vendor._id %>/purchase-bills/<%= b._id %>?_method=DELETE" method="post" class="form-inline" onsubmit="return confirm('Delete this purchase bill?');">
+                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+              </form>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+      <% } else { %>
+      <p class="muted">No purchase bills. <a href="/vendors/<%= vendor._id %>/purchase-bills/new">Add purchase bill</a></p>
+      <% } %>
+    </section>
+    <section class="panel">
+      <h2>Payment bills</h2>
+      <p class="muted" style="font-size: 0.85rem;">Payments to this vendor are deducted from your bank balance.</p>
+      <% if (payments.length) { %>
+      <table class="table">
+        <thead>
+          <tr><th>Amount</th><th>Transaction ID</th><th>Receipt</th><th>Date</th><th></th></tr>
+        </thead>
+        <tbody>
+          <% payments.forEach(p => { %>
+          <tr>
+            <td><%= (Number(p.amount) || 0).toLocaleString('en-IN', { style: 'currency', currency: 'INR' }) %></td>
+            <td><%= p.transactionId || '—' %></td>
+            <td><% if (p.image) { %><a href="<%= p.image %>" target="_blank" rel="noopener"><img src="<%= p.image %>" alt="Receipt" class="thumb"></a><% } else { %>—<% } %></td>
+            <td><%= p.date ? new Date(p.date).toLocaleDateString() : '—' %></td>
+            <td>
+              <form action="/vendors/<%= vendor._id %>/payments/<%= p._id %>?_method=DELETE" method="post" class="form-inline" onsubmit="return confirm('Delete this payment?');">
+                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+              </form>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+      <% } else { %>
+      <p class="muted">No payments. <a href="/vendors/<%= vendor._id %>/payments/new">Add payment bill</a></p>
+      <% } %>
+    </section>
+  </div>
+</main>
+<%- include('../partials/footer') %>

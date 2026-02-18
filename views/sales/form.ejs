@@ -1,0 +1,63 @@
+<%- include('../partials/head') %>
+<%- include('../partials/nav') %>
+<main class="main">
+  <header class="page-header">
+    <h1>Record Sale</h1>
+    <a href="/sales" class="btn">Back to Sales</a>
+  </header>
+
+  <form action="/sales" method="post" class="form form-card" id="saleForm">
+    <label>Product</label>
+    <select name="productId" id="productId" required>
+      <option value="">Select product</option>
+      <% products.forEach(p => { %>
+      <option value="<%= p._id %>" data-has-variants="<%= p.variants && p.variants.length ? '1' : '0' %>" data-price="<%= p.price %>" data-stock="<%= p.stock %>"><%= p.name %><% if (p.category) { %> (<%= p.category.name %><% if (p.subcategory) { %> / <%= p.subcategory.name %><% } %>)<% } %></option>
+      <% }) %>
+    </select>
+
+    <div id="variantBlock" style="display: none;">
+      <label>Variant</label>
+      <select name="variantIndex" id="variantIndex">
+        <option value="">Select variant</option>
+      </select>
+    </div>
+
+    <label>Quantity</label>
+    <input type="number" name="quantity" min="1" required>
+
+    <label>Date</label>
+    <input type="datetime-local" name="date" value="<%= new Date().toISOString().slice(0,16) %>">
+
+    <button type="submit" class="btn btn-primary">Record Sale (reduces stock)</button>
+  </form>
+</main>
+<script>
+(function() {
+  var products = <%- JSON.stringify(products.map(p => ({ id: p._id.toString(), variants: (p.variants || []).map(v => ({ name: v.name, stock: v.stock, price: v.price })), price: p.price })) %>;
+  var productSelect = document.getElementById('productId');
+  var variantBlock = document.getElementById('variantBlock');
+  var variantSelect = document.getElementById('variantIndex');
+  if (!productSelect || !variantBlock || !variantSelect) return;
+  productSelect.addEventListener('change', function() {
+    var id = this.value;
+    var opt = this.options[this.selectedIndex];
+    variantSelect.innerHTML = '<option value="">Select variant</option>';
+    variantBlock.style.display = 'none';
+    if (!id) return;
+    var p = products.find(function(x) { return x.id === id; });
+    if (p && p.variants && p.variants.length > 0) {
+      variantBlock.style.display = 'block';
+      variantSelect.required = true;
+      p.variants.forEach(function(v, i) {
+        var o = document.createElement('option');
+        o.value = i;
+        o.textContent = v.name + ' (Stock: ' + v.stock + ', ₹' + (v.price || p.price || 0) + ')';
+        variantSelect.appendChild(o);
+      });
+    } else {
+      variantSelect.required = false;
+    }
+  });
+})();
+</script>
+<%- include('../partials/footer') %>

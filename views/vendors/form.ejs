@@ -1,0 +1,16 @@
+<%- include('../partials/head') %>
+<%- include('../partials/nav') %>
+<main class="main">
+  <header class="page-header">
+    <h1>Add vendor</h1>
+    <a href="/vendors" class="btn">Back to Vendors</a>
+  </header>
+
+  <form action="/vendors" method="post" class="form form-card">
+    <label>Vendor name</label>
+    <input type="text" name="name" required>
+
+    <button type="submit" class="btn btn-primary">Add vendor</button>
+  </form>
+</main>
+<%- include('../partials/footer') %>

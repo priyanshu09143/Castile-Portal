@@ -1,0 +1,21 @@
+<%- include('../partials/head') %>
+<main class="main login-page">
+  <div class="login-card">
+    <h1>Castile Portal</h1>
+    <p class="login-hint">Enter 6-digit password</p>
+    <% if (typeof error !== 'undefined' && error) { %>
+    <p class="login-error"><%= error %></p>
+    <% } %>
+    <form action="/login" method="post" class="form" id="loginForm">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" minlength="6" placeholder="••••••" autocomplete="off" required autofocus>
+      <button type="submit" class="btn btn-primary btn-block">Login</button>
+    </form>
+  </div>
+  <script>
+    document.getElementById('password').addEventListener('input', function() {
+      if (this.value.length === 6) document.getElementById('loginForm').submit();
+    });
+  </script>
+</main>
+<%- include('../partials/footer') %>

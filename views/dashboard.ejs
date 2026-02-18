@@ -1,0 +1,128 @@
+<%- include('partials/head') %>
+<%- include('partials/nav') %>
+<main class="main">
+  <% if (typeof cleared !== 'undefined' && cleared) { %>
+  <p class="msg-success">All data has been cleared.</p>
+  <% } %>
+  <header class="page-header">
+    <h1>Dashboard</h1>
+    <div class="filter-tabs">
+      <a href="/?filter=day"  class="btn-tab <%= filter === 'day' ? 'active' : '' %>">Today</a>
+      <a href="/?filter=week" class="btn-tab <%= filter === 'week' ? 'active' : '' %>">This Week</a>
+      <a href="/?filter=month" class="btn-tab <%= filter === 'month' ? 'active' : '' %>">This Month</a>
+    </div>
+  </header>
+
+  <section class="cards">
+    <div class="card card-balance">
+      <h2>Current Bank Balance</h2>
+      <p class="amount"><%= bankBalance.toLocaleString('en-IN', { style: 'currency', currency: 'INR' }) %></p>
+    </div>
+    <div class="card">
+      <h2>Sales in period</h2>
+      <p class="amount"><%= salesInPeriod.toLocaleString('en-IN', { style: 'currency', currency: 'INR' }) %></p>
+    </div>
+    <div class="card">
+      <h2>Payments in period</h2>
+      <p class="amount"><%= paymentsInPeriod.toLocaleString('en-IN', { style: 'currency', currency: 'INR' }) %></p>
+    </div>
+    <div class="card">
+      <h2>Vendor payments in period</h2>
+      <p class="amount" style="color: var(--danger);">− <%= (typeof vendorPaymentsInPeriod !== 'undefined' ? vendorPaymentsInPeriod : 0).toLocaleString('en-IN', { style: 'currency', currency: 'INR' }) %></p>
+    </div>
+  </section>
+
+  <div class="grid-2">
+    <section class="panel">
+      <h2>Sales (<%= filter %>)</h2>
+      <% if (sales.length) { %>
+      <table class="table">
+        <thead>
+          <tr><th>Product</th><th>Qty</th><th>Amount</th><th>Date</th></tr>
+        </thead>
+        <tbody>
+          <% sales.forEach(s => { %>
+          <tr>
+            <td><%= s.productName %></td>
+            <td><%= s.quantity %></td>
+            <td><%= (Number(s.amount) || 0).toLocaleString('en-IN', { style: 'currency', currency: 'INR' }) %></td>
+            <td><%= new Date(s.date).toLocaleDateString() %></td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+      <% } else { %>
+      <p class="muted">No sales in this period.</p>
+      <% } %>
+    </section>
+    <section class="panel">
+      <h2>Payments (<%= filter %>)</h2>
+      <% if (payments.length) { %>
+      <table class="table">
+        <thead>
+          <tr><th>Amount</th><th>Source</th><th>Date</th></tr>
+        </thead>
+        <tbody>
+          <% payments.forEach(p => { %>
+          <tr>
+            <td><%= (Number(p.amount) || 0).toLocaleString('en-IN', { style: 'currency', currency: 'INR' }) %></td>
+            <td><%= p.source %></td>
+            <td><%= new Date(p.date).toLocaleDateString() %></td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+      <% } else { %>
+      <p class="muted">No payments in this period.</p>
+      <% } %>
+    </section>
+    <section class="panel">
+      <h2>Vendor payments (<%= filter %>)</h2>
+      <% if (typeof vendorPayments !== 'undefined' && vendorPayments.length) { %>
+      <table class="table">
+        <thead>
+          <tr><th>Vendor</th><th>Amount</th><th>Transaction</th><th>Date</th></tr>
+        </thead>
+        <tbody>
+          <% vendorPayments.forEach(v => { %>
+          <tr>
+            <td><%= v.vendorName %></td>
+            <td><%= (Number(v.amount) || 0).toLocaleString('en-IN', { style: 'currency', currency: 'INR' }) %></td>
+            <td><%= v.transactionId || '—' %></td>
+            <td><%= new Date(v.date).toLocaleDateString() %></td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+      <% } else { %>
+      <p class="muted">No vendor payments in this period.</p>
+      <% } %>
+    </section>
+  </div>
+
+  <section class="panel">
+    <h2>Products & Stock</h2>
+    <% if (products.length) { %>
+    <table class="table">
+      <thead>
+        <tr><th>Image</th><th>Name</th><th>Stock</th><th>Price</th></tr>
+      </thead>
+      <tbody>
+        <% products.forEach(p => { %>
+        <tr>
+          <td>
+            <% if (p.image) { %><img src="<%= p.image %>" alt="" class="thumb"><% } else { %>—<% } %>
+          </td>
+          <td><%= p.name %></td>
+          <td><%= p.stock %></td>
+          <td><%= (p.price || 0).toLocaleString('en-IN', { style: 'currency', currency: 'INR' }) %></td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+    <% } else { %>
+    <p class="muted">No products. <a href="/products/new">Add product</a></p>
+    <% } %>
+  </section>
+</main>
+<%- include('partials/footer') %>

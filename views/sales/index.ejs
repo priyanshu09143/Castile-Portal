@@ -1,0 +1,30 @@
+<%- include('../partials/head') %>
+<%- include('../partials/nav') %>
+<main class="main">
+  <header class="page-header">
+    <h1>Sales</h1>
+    <a href="/sales/new" class="btn btn-primary">Record Sale</a>
+  </header>
+
+  <% if (sales.length) { %>
+  <table class="table">
+    <thead>
+<tr><th>Product</th><th>Variant</th><th>Quantity</th><th>Amount</th><th>Date</th></tr>
+        </thead>
+        <tbody>
+          <% sales.forEach(s => { %>
+          <tr>
+            <td><%= s.productName %></td>
+            <td><%= s.variantName || '—' %></td>
+        <td><%= s.quantity %></td>
+        <td><%= (Number(s.amount) || 0).toLocaleString('en-IN', { style: 'currency', currency: 'INR' }) %></td>
+        <td><%= new Date(s.date).toLocaleString() %></td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+  <% } else { %>
+  <p class="muted">No sales yet. <a href="/sales/new">Record a sale</a></p>
+  <% } %>
+</main>
+<%- include('../partials/footer') %>

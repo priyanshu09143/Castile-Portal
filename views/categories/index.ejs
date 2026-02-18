@@ -1,0 +1,55 @@
+<%- include('../partials/head') %>
+<%- include('../partials/nav') %>
+<main class="main">
+  <header class="page-header">
+    <h1>Categories & Subcategories</h1>
+    <a href="/products" class="btn">Products</a>
+  </header>
+
+  <section class="panel" style="max-width: 480px; margin-bottom: 1.5rem;">
+    <h2>Add category</h2>
+    <form action="/categories" method="post" class="form">
+      <input type="text" name="name" placeholder="Category name" required>
+      <button type="submit" class="btn btn-primary">Add category</button>
+    </form>
+  </section>
+
+  <% if (categories.length) { %>
+  <ul class="category-list">
+    <% categories.forEach(cat => { %>
+    <li class="category-item">
+      <div class="category-header">
+        <strong><%= cat.name %></strong>
+        <form action="/categories/<%= cat._id %>?_method=DELETE" method="post" class="form-inline" onsubmit="return confirm('Delete this category and its subcategories?');">
+          <button type="submit" class="btn btn-sm btn-danger">Delete category</button>
+        </form>
+      </div>
+      <div class="subcategory-section">
+        <form action="/categories/<%= cat._id %>/subcategories" method="post" class="form-inline subcategory-form">
+          <input type="text" name="name" placeholder="New subcategory" required>
+          <button type="submit" class="btn btn-sm">Add subcategory</button>
+        </form>
+        <% const subs = subcategories.filter(s => s.category && s.category._id.toString() === cat._id.toString()); %>
+        <% if (subs.length) { %>
+        <ul class="subcategory-list">
+          <% subs.forEach(sub => { %>
+          <li>
+            <%= sub.name %>
+            <form action="/categories/subcategory/<%= sub._id %>?_method=DELETE" method="post" class="form-inline" onsubmit="return confirm('Delete this subcategory?');">
+              <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+            </form>
+          </li>
+          <% }) %>
+        </ul>
+        <% } else { %>
+        <p class="muted" style="margin: 0.5rem 0 0;">No subcategories yet.</p>
+        <% } %>
+      </div>
+    </li>
+    <% }) %>
+  </ul>
+  <% } else { %>
+  <p class="muted">No categories yet. Add one above, then add subcategories under each category.</p>
+  <% } %>
+</main>
+<%- include('../partials/footer') %>

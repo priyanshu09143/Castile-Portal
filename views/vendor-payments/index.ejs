@@ -1,0 +1,39 @@
+<%- include('../partials/head') %>
+<%- include('../partials/nav') %>
+<main class="main">
+  <header class="page-header">
+    <h1>Vendor payments</h1>
+    <a href="/vendor-payments/new" class="btn btn-primary">Add vendor payment</a>
+  </header>
+  <p class="muted">Vendor payments are deducted from your bank balance.</p>
+
+  <% if (vendorPayments.length) { %>
+  <table class="table">
+    <thead>
+      <tr><th>Vendor</th><th>Amount</th><th>Transaction ID</th><th>Note</th><th>Image</th><th>Date</th><th>Action</th></tr>
+    </thead>
+    <tbody>
+      <% vendorPayments.forEach(v => { %>
+      <tr>
+        <td><%= v.vendorName %></td>
+        <td><%= (Number(v.amount) || 0).toLocaleString('en-IN', { style: 'currency', currency: 'INR' }) %></td>
+        <td><%= v.transactionId || '—' %></td>
+        <td><%= v.note || '—' %></td>
+        <td>
+          <% if (v.image) { %><a href="<%= v.image %>" target="_blank" rel="noopener"><img src="<%= v.image %>" alt="Receipt" class="thumb"></a><% } else { %>—<% } %>
+        </td>
+        <td><%= v.date ? new Date(v.date).toLocaleString() : '—' %></td>
+        <td>
+          <form action="/vendor-payments/<%= v._id %>?_method=DELETE" method="post" class="form-inline" onsubmit="return confirm('Delete this vendor payment?');">
+            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+          </form>
+        </td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+  <% } else { %>
+  <p class="muted">No vendor payments yet. <a href="/vendor-payments/new">Add a vendor payment</a></p>
+  <% } %>
+</main>
+<%- include('../partials/footer') %>

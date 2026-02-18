@@ -1,0 +1,24 @@
+<%- include('../partials/head') %>
+<%- include('../partials/nav') %>
+<main class="main">
+  <header class="page-header">
+    <h1>Vendors</h1>
+    <a href="/vendors/new" class="btn btn-primary">Add vendor</a>
+  </header>
+
+  <% if (vendors.length) { %>
+  <ul class="vendor-list">
+    <% vendors.forEach(v => { %>
+    <li class="vendor-item">
+      <a href="/vendors/<%= v._id %>" class="vendor-link"><%= v.name %></a>
+      <form action="/vendors/<%= v._id %>?_method=DELETE" method="post" class="form-inline" onsubmit="return confirm('Remove this vendor and all their bills?');">
+        <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+      </form>
+    </li>
+    <% }) %>
+  </ul>
+  <% } else { %>
+  <p class="muted">No vendors yet. <a href="/vendors/new">Add a vendor</a></p>
+  <% } %>
+</main>
+<%- include('../partials/footer') %>
