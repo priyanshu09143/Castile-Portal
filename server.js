@@ -23,6 +23,9 @@ const PORT = process.env.PORT || 3000;
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+// Behind a proxy in production (e.g. Render), trust X-Forwarded-* headers
+// so secure cookies work correctly over HTTPS.
+app.set('trust proxy', 1);
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -32,7 +35,8 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: process.env.NODE_ENV === 'production', // true on HTTPS (production)
+    // In production, mark cookies secure when the request is over HTTPS
+    secure: process.env.NODE_ENV === 'production' ? 'auto' : false,
     maxAge: 7 * 24 * 60 * 60 * 1000  // 1 week
   }
 }));
