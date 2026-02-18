@@ -30,10 +30,12 @@ router.get('/', async (req, res) => {
 
 router.get('/new', async (req, res) => {
   try {
-    const [categories, subcategories] = await Promise.all([
+    const [categories, allSubcategories] = await Promise.all([
       Category.find().sort({ name: 1 }),
       Subcategory.find().populate('category').sort({ name: 1 })
     ]);
+    // Filter out subcategories with null category (orphaned subcategories)
+    const subcategories = (allSubcategories || []).filter(s => s.category && s.category._id);
     res.render('products/form', { product: null, categories, subcategories });
   } catch (err) {
     res.status(500).send(err.message);
@@ -67,10 +69,12 @@ router.get('/:id/edit', async (req, res) => {
   try {
     const product = await Product.findById(req.params.id).populate('category subcategory');
     if (!product) return res.status(404).send('Product not found');
-    const [categories, subcategories] = await Promise.all([
+    const [categories, allSubcategories] = await Promise.all([
       Category.find().sort({ name: 1 }),
       Subcategory.find().populate('category').sort({ name: 1 })
     ]);
+    // Filter out subcategories with null category (orphaned subcategories)
+    const subcategories = (allSubcategories || []).filter(s => s.category && s.category._id);
     res.render('products/form', { product, categories, subcategories });
   } catch (err) {
     res.status(500).send(err.message);

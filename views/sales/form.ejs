@@ -31,27 +31,29 @@
     <button type="submit" class="btn btn-primary">Record Sale (reduces stock)</button>
   </form>
 </main>
+<script type="application/json" id="productsJson"><%- productsJson %></script>
 <script>
 (function() {
-  var products = <%- JSON.stringify(products.map(p => ({ id: p._id.toString(), variants: (p.variants || []).map(v => ({ name: v.name, stock: v.stock, price: v.price })), price: p.price })) %>;
+  var el = document.getElementById('productsJson');
+  var products = el ? JSON.parse(el.textContent) : [];
   var productSelect = document.getElementById('productId');
   var variantBlock = document.getElementById('variantBlock');
   var variantSelect = document.getElementById('variantIndex');
   if (!productSelect || !variantBlock || !variantSelect) return;
   productSelect.addEventListener('change', function() {
     var id = this.value;
-    var opt = this.options[this.selectedIndex];
     variantSelect.innerHTML = '<option value="">Select variant</option>';
     variantBlock.style.display = 'none';
     if (!id) return;
-    var p = products.find(function(x) { return x.id === id; });
+    var p = products.find(function(x) { return String(x._id) === String(id); });
     if (p && p.variants && p.variants.length > 0) {
       variantBlock.style.display = 'block';
       variantSelect.required = true;
       p.variants.forEach(function(v, i) {
         var o = document.createElement('option');
+        var price = (v.price || p.price || 0);
         o.value = i;
-        o.textContent = v.name + ' (Stock: ' + v.stock + ', ₹' + (v.price || p.price || 0) + ')';
+        o.textContent = v.name + ' (Stock: ' + (v.stock || 0) + ', ₹' + price + ')';
         variantSelect.appendChild(o);
       });
     } else {

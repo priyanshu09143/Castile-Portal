@@ -14,8 +14,10 @@ router.get('/', async (req, res) => {
 
 router.get('/new', async (req, res) => {
   try {
-    const products = await Product.find().populate('category subcategory').sort({ name: 1 });
-    res.render('sales/form', { products });
+    const products = await Product.find().populate('category subcategory').sort({ name: 1 }).lean();
+    // Pre-stringify for template; avoid breaking script tag if product names contain </script>
+    const productsJson = JSON.stringify(products).replace(/<\/script/gi, '<\\/script');
+    res.render('sales/form', { products, productsJson });
   } catch (err) {
     res.status(500).send(err.message);
   }

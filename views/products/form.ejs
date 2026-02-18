@@ -22,7 +22,7 @@
     <select name="subcategoryId" id="subcategoryId">
       <option value="">None</option>
       <% (subcategories || []).forEach(s => { %>
-      <option value="<%= s._id %>" data-category="<%= s.category._id %>" <%= product && product.subcategory && product.subcategory._id.toString() === s._id.toString() ? 'selected' : '' %>><%= s.name %></option>
+      <option value="<%= s._id %>" data-category="<%= s.category && s.category._id ? s.category._id : '' %>" <%= product && product.subcategory && product.subcategory._id.toString() === s._id.toString() ? 'selected' : '' %>><%= s.name %></option>
       <% }) %>
     </select>
 

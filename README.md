@@ -202,6 +202,49 @@ sales/
 
 ---
 
+## Deployment
+
+### Render (or similar platforms)
+
+The app is deployed and working at: **https://castile-portal.onrender.com**
+
+#### Render Setup Steps:
+
+1. **Create a new Web Service** on Render.
+2. **Connect your repository** (GitHub/GitLab) or deploy from a Git URL.
+3. **Build & Start commands:**
+   - **Build Command:** `npm install`
+   - **Start Command:** `npm start`
+4. **Environment Variables** (in Render dashboard):
+   - `MONGODB_URI`: Your MongoDB connection string (e.g., MongoDB Atlas URI)
+   - `SESSION_SECRET`: A random secret string for session cookies (e.g., generate with `openssl rand -hex 32`)
+   - `PORT`: Usually set automatically by Render (or use `PORT` env var)
+5. **MongoDB**: Use MongoDB Atlas (free tier) or another MongoDB service. Set `MONGODB_URI` in Render environment variables.
+6. **Deploy**: Render will build and deploy automatically on git push.
+
+#### Production Considerations:
+
+- **HTTPS**: Render provides HTTPS automatically. Update session cookie `secure` flag if needed:
+  ```javascript
+  cookie: {
+    secure: process.env.NODE_ENV === 'production', // true on HTTPS
+    maxAge: 7 * 24 * 60 * 60 * 1000
+  }
+  ```
+- **File uploads**: Render's filesystem is ephemeral. For persistent image storage, consider:
+  - Cloud storage (AWS S3, Cloudinary, etc.)
+  - Or use Render's persistent disk (if available)
+- **Database**: Use MongoDB Atlas or another managed MongoDB service for production.
+- **Environment**: Set `NODE_ENV=production` in Render environment variables.
+
+#### Other Platforms:
+
+- **Heroku**: Similar setup; use `heroku config:set` for environment variables.
+- **Railway**: Connect repo, set env vars, deploy.
+- **Vercel/Netlify**: These are better for static sites; for Node.js apps, Render/Heroku/Railway are better choices.
+
+---
+
 ## License
 
 Use and modify as needed for your project.
