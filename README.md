@@ -7,7 +7,7 @@ A **Node.js** stock, sales, and payment portal with **MongoDB**, **EJS** fronten
 ## Features
 
 ### Authentication
-- **Login** with 6-digit password (default: `935163`).
+- **Login** with 6-digit password (default: `******`).
 - **Auto-login**: Typing the 6th digit submits the form automatically.
 - **Session** lasts 1 week; no re-login during that period.
 - **Logout** from the nav.
@@ -248,3 +248,4 @@ The app is deployed and working at: **https://castile-portal.onrender.com**
 ## License
 
 Use and modify as needed for your project.
+
